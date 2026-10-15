@@ -12,11 +12,21 @@
   svg { display:block; width:100%; height:auto; background:#fff; border:1px solid #d9e2ec; }.node { stroke:#607b96; stroke-width:1.5; rx:7; ry:7; }.input{fill:var(--input)}.decision{fill:var(--decision);stroke:#b48718}.process{fill:var(--process)}.risk{fill:var(--risk);stroke:#b34c48}.follow{fill:var(--follow)}.need{fill:var(--need);stroke:#c67c19}.end{fill:#eef1f5}
   .title { font-size:15px; font-weight:700; text-anchor:middle; fill:var(--ink); }.copy { font-size:11.5px; text-anchor:middle; fill:#344256; }.tiny { font-size:10.5px; text-anchor:middle; fill:#344256; }.lane { font-size:16px; font-weight:700; fill:#586981; }.hint { font-size:11px; fill:#895b11; font-weight:700; }.yesno{font-size:12px;font-weight:700;fill:#344256}.arrow{fill:none;stroke:#74869a;stroke-width:1.9;marker-end:url(#a)}.riskarrow{fill:none;stroke:#bb4b48;stroke-width:1.9;marker-end:url(#r)}.dash{fill:none;stroke:#c17a1b;stroke-width:1.5;stroke-dasharray:5 4}
   .notes { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px; }.note { background:#fff;border:1px solid #d9e2ec;padding:15px 17px;font-size:13px;line-height:1.65;color:#344256; }.note h2 { font-size:15px;margin:0 0 7px;color:#172033; }.note ul{margin:0;padding-left:18px}.note strong{color:#895b11}
+  .editor-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px;padding:12px 14px;background:#fff;border:1px solid #d9e2ec}.editor-bar strong{font-size:14px;margin-right:auto}.editor-bar button,.editor-bar .file-button{border:1px solid #8294aa;background:#fff;color:#172033;padding:8px 11px;border-radius:4px;font:inherit;font-size:13px;cursor:pointer}.editor-bar button:hover,.editor-bar .file-button:hover{background:#edf4fb}.editor-bar button.primary{background:#1f5e96;color:#fff;border-color:#1f5e96}.editor-bar input{display:none}.editor-status{font-size:12px;color:var(--muted);min-width:105px;text-align:right}.node.is-selected{stroke:#1f5e96!important;stroke-width:4!important;filter:drop-shadow(0 1px 2px #789)}.node.is-editable{cursor:pointer}.editor-panel{position:fixed;z-index:3;right:22px;top:22px;width:370px;background:#fff;border:1px solid #b9c8d8;box-shadow:0 10px 35px rgba(23,32,51,.2);padding:18px}.editor-panel[hidden]{display:none}.editor-panel h2{font-size:17px;margin:0 0 5px}.editor-panel p{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 14px}.editor-panel label{display:block;font-size:13px;font-weight:700;margin:11px 0 5px}.editor-panel input,.editor-panel textarea{width:100%;border:1px solid #a9bacb;border-radius:3px;padding:8px;font:14px "Microsoft YaHei","PingFang SC",Arial,sans-serif;color:var(--ink)}.editor-panel textarea{resize:vertical;min-height:130px;line-height:1.5}.editor-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.editor-actions button{border:1px solid #8294aa;background:#fff;padding:8px 12px;border-radius:4px;cursor:pointer;font:inherit}.editor-actions .save{background:#1f5e96;border-color:#1f5e96;color:#fff}.help{font-size:12px;color:var(--muted);margin:0 0 10px}
+  @media print{body{background:#fff}.editor-bar,.editor-panel,.help{display:none!important}.wrap{padding:0;min-width:0}.wrap svg{border:0}.notes{break-inside:avoid}header{padding:14px 20px}}
 </style>
 </head>
 <body>
 <header><h1>全链路客户服务 SOP：售前、售中、售后与风险处置</h1><p>用于邮件、站内信、客服工单与平台转交。橙色虚线节点是需要业务方补充或确认的判断条件；红色路径必须由人工或专项团队处理。</p></header>
 <main class="wrap">
+<div class="editor-bar" aria-label="SOP 编辑工具">
+  <strong>可编辑 SOP</strong><span class="help">点击流程节点或浅橙色规则面板进行编辑，修改会自动保存在本浏览器。</span>
+  <button type="button" id="exportButton">导出 JSON</button>
+  <label class="file-button" for="importInput">导入 JSON<input id="importInput" type="file" accept="application/json"></label>
+  <button type="button" id="printButton">打印 / 保存 PDF</button>
+  <button type="button" id="resetButton">重置本地修改</button>
+  <span class="editor-status" id="saveStatus" aria-live="polite">尚未修改</span>
+</div>
 <div class="legend"><span class="key"><i class="dot" style="background:#e9f4ff"></i>接收/事实收集</span><span class="key"><i class="dot" style="background:#fff4ce"></i>判断分流</span><span class="key"><i class="dot" style="background:#e8f7ed"></i>标准处理</span><span class="key"><i class="dot" style="background:#f1ecff"></i>跟进/闭环</span><span class="key"><i class="dot" style="background:#ffe8e5"></i>风险/人工</span><span class="key"><i class="dot" style="background:#fff1dc"></i>待补充条件</span></div>
 <svg viewBox="0 0 2360 2500" role="img" aria-label="完整售前售中售后客户服务 SOP 流程图">
 <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#74869a"/></marker><marker id="r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#bb4b48"/></marker></defs>
@@ -102,5 +112,104 @@
 <article class="note"><h2>自动化边界</h2><ul><li><strong>可自动：</strong>检索、归类、信息澄清、保存草稿</li><li><strong>需授权：</strong>发送、退款、补件、换货、改址、取消</li><li><strong>必须人工：</strong>安全、法律、平台升级、欺诈、高额争议</li><li>明确每类场景是否允许自动发信和自动结案</li></ul></article>
 </section>
 </main>
+<aside class="editor-panel" id="editorPanel" hidden aria-labelledby="editorHeading">
+  <h2 id="editorHeading">编辑流程内容</h2><p id="editorType"></p>
+  <label for="nodeTitle">标题</label><input id="nodeTitle" maxlength="80">
+  <label for="nodeBody">说明（每行会显示为一行）</label><textarea id="nodeBody" maxlength="800"></textarea>
+  <div class="editor-actions"><button type="button" id="cancelEdit">取消</button><button type="button" class="save" id="saveEdit">保存</button></div>
+</aside>
+<script>
+(() => {
+  const STORAGE_KEY = 'customer-complaint-sop-flow-edits-v1';
+  const svg = document.querySelector('svg');
+  const panel = document.getElementById('editorPanel');
+  const titleInput = document.getElementById('nodeTitle');
+  const bodyInput = document.getElementById('nodeBody');
+  const status = document.getElementById('saveStatus');
+  let selected = null;
+  let edits = loadEdits();
+
+  function loadEdits() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function nodeId(rect) { return [rect.getAttribute('x'), rect.getAttribute('y'), rect.getAttribute('width'), rect.getAttribute('height')].join('-'); }
+  function relatedText(rect) {
+    const x = Number(rect.getAttribute('x')), y = Number(rect.getAttribute('y'));
+    const w = Number(rect.getAttribute('width')), h = Number(rect.getAttribute('height'));
+    return [...svg.querySelectorAll('text.title, text.copy')].filter(text => {
+      const tx = Number(text.getAttribute('x')), ty = Number(text.getAttribute('y'));
+      return tx >= x && tx <= x + w && ty >= y && ty <= y + h;
+    }).sort((a, b) => Number(a.getAttribute('y')) - Number(b.getAttribute('y')));
+  }
+  function readNode(rect) {
+    const texts = relatedText(rect);
+    const title = texts.find(t => t.classList.contains('title'));
+    return { title: title ? title.textContent : '', body: texts.filter(t => t.classList.contains('copy')).map(t => t.textContent).join('\n') };
+  }
+  function writeNode(rect, value) {
+    const texts = relatedText(rect);
+    const title = texts.find(t => t.classList.contains('title'));
+    const body = texts.filter(t => t.classList.contains('copy'));
+    if (title) title.textContent = value.title.trim();
+    const lines = value.body.split('\n').map(line => line.trim()).filter(Boolean);
+    body.forEach((text, index) => { text.textContent = lines[index] || ''; });
+    lines.slice(body.length).forEach((line, index) => {
+      const last = body[body.length - 1];
+      if (!last) return;
+      const clone = last.cloneNode(true);
+      clone.textContent = line;
+      clone.setAttribute('y', String(Number(last.getAttribute('y')) + (index + 1) * 20));
+      last.parentNode.insertBefore(clone, last.nextSibling);
+    });
+  }
+  function persist() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
+    status.textContent = '已自动保存 ' + new Date().toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'});
+  }
+  function select(rect) {
+    if (selected) selected.classList.remove('is-selected');
+    selected = rect; selected.classList.add('is-selected');
+    const value = readNode(rect); titleInput.value = value.title; bodyInput.value = value.body;
+    document.getElementById('editorType').textContent = rect.classList.contains('need') ? '规则/待补充条件面板' : '流程节点';
+    panel.hidden = false; titleInput.focus();
+  }
+  function close() { if (selected) selected.classList.remove('is-selected'); selected = null; panel.hidden = true; }
+  function applyEdits() { Object.entries(edits).forEach(([id, value]) => { const rect = [...svg.querySelectorAll('rect.node')].find(item => nodeId(item) === id); if (rect) writeNode(rect, value); }); }
+  [...svg.querySelectorAll('rect.node')].forEach(rect => {
+    rect.classList.add('is-editable'); rect.setAttribute('tabindex', '0'); rect.setAttribute('role', 'button');
+    rect.setAttribute('aria-label', '编辑 ' + readNode(rect).title);
+    rect.addEventListener('click', () => select(rect));
+    rect.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(rect); } });
+  });
+  applyEdits();
+  document.getElementById('saveEdit').addEventListener('click', () => {
+    if (!selected || !titleInput.value.trim()) return;
+    const value = { title: titleInput.value, body: bodyInput.value };
+    edits[nodeId(selected)] = value; writeNode(selected, value); persist(); close();
+  });
+  document.getElementById('cancelEdit').addEventListener('click', close);
+  document.getElementById('printButton').addEventListener('click', () => window.print());
+  document.getElementById('resetButton').addEventListener('click', () => {
+    if (!confirm('确认清除本浏览器保存的所有 SOP 修改，并恢复页面默认内容？')) return;
+    localStorage.removeItem(STORAGE_KEY); location.reload();
+  });
+  document.getElementById('exportButton').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), edits }, null, 2)], {type:'application/json'});
+    const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'customer-complaint-sop-edits.json'; link.click(); URL.revokeObjectURL(link.href);
+  });
+  document.getElementById('importInput').addEventListener('change', event => {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader(); reader.onload = () => {
+      try {
+        const imported = JSON.parse(reader.result);
+        if (!imported || typeof imported.edits !== 'object' || Array.isArray(imported.edits)) throw new Error();
+        if (!confirm('导入将覆盖当前浏览器保存的 SOP 修改，是否继续？')) return;
+        edits = imported.edits; persist(); location.reload();
+      } catch { alert('无法读取该 JSON 文件。请选择由本页面导出的编辑文件。'); }
+    }; reader.readAsText(file, 'utf-8'); event.target.value = '';
+  });
+})();
+</script>
 </body>
 </html>
