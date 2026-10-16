@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>订单取消流程图 - 可编辑版</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    :root{--navy:#172a46;--blue:#e8f0ff;--line:#8da2c0;--ink:#172033}*{box-sizing:border-box}body{margin:0;font:14px/1.45 "Microsoft YaHei",Arial,sans-serif;color:var(--ink);background:#f3f6fb}header{height:58px;padding:0 22px;display:flex;align-items:center;gap:16px;background:var(--navy);color:white}h1{font-size:17px;margin:0}.hint{font-size:12px;color:#c9d5ea;flex:1}button,a.button{border:1px solid #92a7c4;border-radius:4px;background:white;color:#172a46;padding:7px 10px;font:12px inherit;font-weight:700;cursor:pointer;text-decoration:none}button.primary{background:#2f6fb4;color:white;border-color:#2f6fb4}.layout{display:grid;grid-template-columns:minmax(330px,38%) 1fr;min-height:calc(100vh - 58px);gap:12px;padding:12px}.panel{border:1px solid #ced8e6;border-radius:6px;background:white;overflow:hidden}.panel-title{padding:9px 12px;background:#f0f4fa;border-bottom:1px solid #d9e1ec;font-size:12px;font-weight:700}.editor-wrap{height:calc(100vh - 118px);min-height:540px}.editor{width:100%;height:100%;border:0;padding:14px;resize:none;outline:0;font:13px/1.55 Consolas,"Microsoft YaHei",monospace;color:#172033}.preview{position:relative;min-height:540px;overflow:auto;padding:22px;background:#fff}.render{min-width:1120px;padding:10px}.error{margin:14px;color:#a32424;white-space:pre-wrap}.mermaid svg{max-width:none!important;height:auto!important}.status{font-size:12px;color:#5a6980}.back{color:#fff;border-color:#8296b7;background:transparent}@media(max-width:900px){header{height:auto;min-height:58px;flex-wrap:wrap;padding:10px 14px}.hint{min-width:100%}.layout{display:block;padding:8px}.panel{margin-bottom:8px}.editor-wrap{height:360px}.preview{min-height:500px}}@media print{header,.editor-panel{display:none!important}.layout{display:block;padding:0}.preview{border:0;overflow:visible;padding:0}.panel{border:0}.render{padding:0;min-width:0}.mermaid svg{width:100%!important;height:auto!important}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>订单取消流程图</h1><span class="hint">编辑左侧 Mermaid 源码，右侧实时预览。导出 PDF 会打开系统打印窗口，请选择“另存为 PDF”。</span>
+    <a class="button back" href="index.html">返回总 SOP</a><button id="download">导出 .mmd</button><button id="print" class="primary">导出 PDF</button>
+  </header>
+  <main class="layout">
+    <section class="panel editor-panel"><div class="panel-title">Mermaid 源码（可编辑） <span id="status" class="status"></span></div><div class="editor-wrap"><textarea class="editor" id="code" spellcheck="false">flowchart TD
+  A[客户发起取消请求] --> B{订单当前状态判断\n以系统状态为准，勿凭客户主观判断}
+
+  B -->|未发货 / Pending| C[24小时内确认处理\nKohl's要求响应时效]
+  C --> D{是否已生成物流标签?}
+  D -->|未产生标签| E[直接取消订单\n后台标记 Cancelled]
+  D -->|已产生标签未交承运商| F[作废标签 + 拦截包裹\n确认未扫描出库后取消]
+  E --> G[释放库存回可售数量]
+  F --> G
+
+  B -->|已发货 / Shipped| H{客户要求取消原因}
+  H -->|不想要了 / 买错| I[告知无法拦截\n引导走拒收或30天退货流程]
+  I --> J[拒收: 包裹自动退回\n退货: 门店退回 / 直营网点]
+  J --> K{到仓验收\n商品完好? 配件齐全?}
+  K -->|完好| L[核对退款金额\nKohl's Cash抵扣部分需扣除]
+  K -->|损坏 / 缺件 / 使用过| M[拍照留证 → 提交证据申诉\n部分退款或拒绝退款]
+  L --> N[更新订单状态 + 释放 / 报损库存]
+  M --> N
+
+  H -->|运输途中丢失 / 超时未妥投| O[查 GLS / 承运商轨迹\n超过5个工作日未更新异常]
+  O --> P{向承运商开Case索赔\n留存轨迹截图为证}
+  P --> Q[平台规则: 客户指标未收到\n即使有签收记录也优先退款]
+  Q --> R[先给客户退款 / 补发\n再与承运商理赔]
+
+  B -->|平台侧取消\n客户下单后自行取消| S{是否已过免取消窗口?}
+  S -->|未过| T[同意取消 → 同步库存]
+  S -->|已发货| U[包裹照常派送\n通知客户可退回原包裹]
+
+  G --> V[记录台账 → 关闭工单]
+  N --> V
+  R --> V
+  T --> V
+  U --> V
+  V --> W[月度复盘看板]
+  W --> X[取消率监控\n⚠ 高于3%账户可能被暂停 / 立案]
+  W --> Y[取消原因TOP分析\n→ 反向销售品类 / 选品]
+  W --> Z[退款差异对账\nKohl's Cash扣减核对发票]
+
+  classDef start fill:#e9edff,stroke:#9a91ff,stroke-width:1px,color:#172033;
+  classDef action fill:#f2f4ff,stroke:#9a91ff,stroke-width:1px,color:#172033;
+  classDef decision fill:#f6f4ff,stroke:#9a91ff,stroke-width:1px,color:#172033;
+  classDef risk fill:#fff4dd,stroke:#9a91ff,stroke-width:1px,color:#172033;
+  class A start;
+  class C,E,F,G,I,J,L,M,N,O,Q,R,T,U,V,W,Y,Z action;
+  class B,D,H,K,P,S decision;
+  class X risk;</textarea></div></section>
+    <section class="panel"><div class="panel-title">实时预览</div><div class="preview"><div id="diagram" class="render"></div><div id="error" class="error" hidden></div></div></section>
+  </main>
+  <script>
+    const code=document.getElementById('code'),diagram=document.getElementById('diagram'),error=document.getElementById('error'),status=document.getElementById('status');
+    mermaid.initialize({startOnLoad:false,theme:'base',securityLevel:'strict',themeVariables:{fontFamily:'Microsoft YaHei, Arial',primaryColor:'#f2f4ff',primaryTextColor:'#172033',primaryBorderColor:'#9a91ff',lineColor:'#555',tertiaryColor:'#fff'}});
+    let timer; async function render(){try{error.hidden=true;const id='flow-'+Date.now();const result=await mermaid.render(id,code.value);diagram.innerHTML=result.svg;status.textContent='已更新';localStorage.setItem('cancel-request-mermaid-v1',code.value)}catch(e){error.textContent='Mermaid 语法错误：\n'+e.message;error.hidden=false;status.textContent='等待修正'}}
+    code.value=localStorage.getItem('cancel-request-mermaid-v1')||code.value;code.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(render,350)});document.getElementById('download').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code.value],{type:'text/plain;charset=utf-8'}));a.download='订单取消流程图.mmd';a.click();URL.revokeObjectURL(a.href)};document.getElementById('print').onclick=()=>window.print();render();
+  </script>
+</body></html>
